@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -9,13 +9,16 @@
 
   <body>
     <style>
-      #terminal{
-        height: 100vh;
+      #terminal {
+        height: 30vh;
+        bottom: 0px;
+        width: 99vw;
+        position: fixed;
       }
     </style>
     <div id="root"></div>
-    <div id="terminal"></div>
     <script type="module" src="/src/components/terminalLogic.ts" defer></script>
     <script type="module" src="/src/main.jsx"></script>
+    <div id="terminal"></div>
   </body>
 </html>

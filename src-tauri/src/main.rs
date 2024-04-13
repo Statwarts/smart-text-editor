@@ -9,7 +9,13 @@ use std::{
 };
 
 use tauri::{async_runtime::Mutex as AsyncMutex, State};
+use serde::Deserialize;
+use std::fs;
 
+#[derive(Deserialize)]
+struct ReadFileArgs {
+    path: String,
+}
 struct AppState {
     pty_pair: Arc<AsyncMutex<PtyPair>>,
     writer: Arc<AsyncMutex<Box<dyn Write + Send>>>,
@@ -51,6 +57,12 @@ async fn async_create_shell(state: State<'_, AppState>) -> Result<(), String> {
 async fn async_write_to_pty(data: &str, state: State<'_, AppState>) -> Result<(), ()> {
     print!("{}",data);
     write!(state.writer.lock().await, "{}", data).map_err(|_| ())
+}
+
+#[tauri::command]
+async fn read_file(args: ReadFileArgs) -> Result<String, String> {
+    let file_content = fs::read_to_string(&args.path).map_err(|err| err.to_string())?;
+    Ok(file_content)
 }
 
 #[tauri::command]
@@ -117,7 +129,8 @@ fn main() {
             async_write_to_pty,
             async_resize_pty,
             async_create_shell,
-            async_read_from_pty
+            async_read_from_pty,
+            read_file
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
