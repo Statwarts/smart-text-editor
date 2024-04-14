@@ -3,7 +3,10 @@ import { javascript } from "@codemirror/lang-javascript";
 import React, { useState, useEffect, useCallback } from "react";
 import { vscodeDark } from "@uiw/codemirror-theme-vscode";
 import store from "../store";
-import { invoke } from "@tauri-apps/api";
+import {open} from "@tauri-apps/api/dialog"
+import { readTextFile  } from "@tauri-apps/api/fs";
+import { save } from "@tauri-apps/api/dialog";
+
 import { Editor as EditorComponent } from "primereact/editor";
 import Switch from '@mui/material/Switch';
 
@@ -15,7 +18,20 @@ export default function Editor() {
     setValue(val);
   }, []);
 
-  const openFile = async (file) => {};
+  const openFile = async () => {
+    try{
+      const selectedPath = await open();
+      const contents = await readTextFile(selectedPath);
+      setValue(contents);
+      console.log(selectedPath);
+    }
+    catch(e){
+      console.log(e)
+    }
+  };
+  const saveFile = async () => {
+    const selectedPath = await save();
+  }
 
   useEffect(() => {
     store.dispatch({ type: "SET_EDITOR_VALUE", payload: value });
@@ -29,19 +45,13 @@ export default function Editor() {
     <>
       <div>
         <h1>Editor</h1>
-        <input
-          type="file"
-          value={file}
-          onChange={(e) => {
-            setFile(e.target.value);
-          }}
-        ></input>
+        
         <button
           onClick={() => {
-            openFile(file);
+            openFile();
           }}
         >
-          Open File
+          Open
         </button>
         <Switch
         value={type}
