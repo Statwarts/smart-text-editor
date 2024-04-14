@@ -2,13 +2,10 @@
 
 use portable_pty::{native_pty_system, CommandBuilder, PtyPair, PtySize};
 use std::{
-    io::{BufRead, BufReader, Read, Write},
-    process::exit,
-    sync::Arc,
-    thread::{self},
+    fs::File, io::{BufRead, BufReader, Read, Write}, path, process::exit, sync::Arc, thread
 };
 
-use tauri::{async_runtime::Mutex as AsyncMutex, State};
+use tauri::{api::file, async_runtime::Mutex as AsyncMutex, State};
 use serde::Deserialize;
 use std::fs;
 
@@ -60,9 +57,8 @@ async fn async_write_to_pty(data: &str, state: State<'_, AppState>) -> Result<()
 }
 
 #[tauri::command]
-async fn read_file(args: ReadFileArgs) -> Result<String, String> {
-    let file_content = fs::read_to_string(&args.path).map_err(|err| err.to_string())?;
-    Ok(file_content)
+async fn save_file(path: String, contents : String)  {
+    fs::write(path, contents).unwrap();
 }
 
 #[tauri::command]
@@ -130,7 +126,7 @@ fn main() {
             async_resize_pty,
             async_create_shell,
             async_read_from_pty,
-            read_file
+            save_file
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

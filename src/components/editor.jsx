@@ -1,12 +1,12 @@
+import React, { useState, useEffect, useCallback } from "react";
 import CodeMirror from "@uiw/react-codemirror";
 import { javascript } from "@codemirror/lang-javascript";
-import React, { useState, useEffect, useCallback } from "react";
 import { vscodeDark } from "@uiw/codemirror-theme-vscode";
 import store from "../store";
 import {open} from "@tauri-apps/api/dialog"
 import { readTextFile  } from "@tauri-apps/api/fs";
 import { save } from "@tauri-apps/api/dialog";
-
+import { invoke } from "@tauri-apps/api";
 import { Editor as EditorComponent } from "primereact/editor";
 import Switch from '@mui/material/Switch';
 
@@ -30,7 +30,15 @@ export default function Editor() {
     }
   };
   const saveFile = async () => {
-    const selectedPath = await save();
+    try{
+      const selectedPath = await save();
+      if (!selectedPath) return;
+      await invoke("save_file", { path: selectedPath, contents: value });
+      console.log(selectedPath);
+    }
+    catch(e){
+      console.log(e)
+    }
   }
 
   useEffect(() => {
@@ -52,6 +60,13 @@ export default function Editor() {
           }}
         >
           Open
+        </button>
+        <button
+          onClick={() => {
+            saveFile();
+          }}
+        >
+          Save
         </button>
         <Switch
         value={type}
