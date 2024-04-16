@@ -1,7 +1,18 @@
-# Tauri + React
+<h1>
+  A Text/Code editor made using Tauri (React)
+</h1>
 
-This template should help get you started developing with Tauri and React in Vite.
+<h1>
+  To Test Locally
+</h1>
+<p>
+  <ul>
+      <li>
+  <code>npm install</code>
+        </li>
+      <li>
+  <code>npm run tauri dev</code>
+  </li>
+  </ul>
+</p>
 
-## Recommended IDE Setup
-
-- [VS Code](https://code.visualstudio.com/) + [Tauri](https://marketplace.visualstudio.com/items?itemName=tauri-apps.tauri-vscode) + [rust-analyzer](https://marketplace.visualstudio.com/items?itemName=rust-lang.rust-analyzer)
