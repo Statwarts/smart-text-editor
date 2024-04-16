@@ -4,7 +4,7 @@ import TerminalComponent from "./components/terminal";
 import "./App.css";
 export default function App() {
   return (
-    <div className=" bg-black">
+    <div className="text-white bg-black">
       <TerminalComponent />
       <Editor />
     </div>

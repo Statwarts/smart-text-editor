@@ -3,12 +3,12 @@ import CodeMirror from "@uiw/react-codemirror";
 import { javascript } from "@codemirror/lang-javascript";
 import { vscodeDark } from "@uiw/codemirror-theme-vscode";
 import store from "../store";
-import {open} from "@tauri-apps/api/dialog"
-import { readTextFile  } from "@tauri-apps/api/fs";
+import { open } from "@tauri-apps/api/dialog";
+import { readTextFile } from "@tauri-apps/api/fs";
 import { save } from "@tauri-apps/api/dialog";
 import { invoke } from "@tauri-apps/api";
 import { Editor as EditorComponent } from "primereact/editor";
-import Switch from '@mui/material/Switch';
+import Switch from "@mui/material/Switch";
 
 export default function Editor() {
   const [value, setValue] = useState(store.getState().editorValue);
@@ -19,27 +19,25 @@ export default function Editor() {
   }, []);
 
   const openFile = async () => {
-    try{
+    try {
       const selectedPath = await open();
       const contents = await readTextFile(selectedPath);
       setValue(contents);
       console.log(selectedPath);
-    }
-    catch(e){
-      console.log(e)
+    } catch (e) {
+      console.log(e);
     }
   };
   const saveFile = async () => {
-    try{
+    try {
       const selectedPath = await save();
       if (!selectedPath) return;
       await invoke("save_file", { path: selectedPath, contents: value });
       console.log(selectedPath);
+    } catch (e) {
+      console.log(e);
     }
-    catch(e){
-      console.log(e)
-    }
-  }
+  };
 
   useEffect(() => {
     store.dispatch({ type: "SET_EDITOR_VALUE", payload: value });
@@ -53,32 +51,44 @@ export default function Editor() {
     <>
       <div>
         <h1>Editor</h1>
-        
-        <button
-          onClick={() => {
-            openFile();
-          }}
-        >
-          Open
-        </button>
-        <button
-          onClick={() => {
-            saveFile();
-          }}
-        >
-          Save
-        </button>
-        <Switch
-        value={type}
-        onChange={(e) => {
-          store.dispatch({ type: "SET_TYPE", payload: e.target.checked ? "code" : "text" });
-        }}
-        />
+        <div className="w-screen justify-between flex mb-2">
+          <div className="flex gap-2">
+            <button
+              onClick={() => {
+                openFile();
+              }}
+              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-4 rounded-full"
+            >
+              Open
+            </button>
+            <button
+              onClick={() => {
+                saveFile();
+              }}
+              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-4 rounded-full"
+            >
+              Save
+            </button>
+          </div>
+          <Switch
+            value={type}
+            onChange={(e) => {
+              store.dispatch({
+                type: "SET_TYPE",
+                payload: e.target.checked ? "code" : "text",
+              });
+            }}
+          />
+        </div>
         {type === "text" ? (
           <EditorComponent
             value={value}
             onTextChange={(e) => setValue(e.htmlValue)}
-            style={{ height: "49vh", backgroundColor: "#262626", color: "#ffffff", }}
+            style={{
+              height: "49vh",
+              backgroundColor: "#262626",
+              color: "#ffffff",
+            }}
           />
         ) : (
           <CodeMirror
