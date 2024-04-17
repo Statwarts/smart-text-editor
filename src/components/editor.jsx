@@ -8,7 +8,9 @@ import { readTextFile } from "@tauri-apps/api/fs";
 import { save } from "@tauri-apps/api/dialog";
 import { invoke } from "@tauri-apps/api";
 import { Editor as EditorComponent } from "primereact/editor";
-import Switch from "@mui/material/Switch";
+import Switch from "react-switch";
+import {SwitchIconOn, SwitchIconOff } from "./switchIcon";
+
 
 export default function Editor() {
   const [value, setValue] = useState(store.getState().editorValue);
@@ -71,13 +73,23 @@ export default function Editor() {
             </button>
           </div>
           <Switch
-            value={type}
+            checked={type === "code"}
             onChange={(e) => {
+              console.log(e);
               store.dispatch({
                 type: "SET_TYPE",
-                payload: e.target.checked ? "code" : "text",
+                payload: e ? "code" : "text",
               });
             }}
+            height={40}
+            width={90}
+            handleDiameter={50}
+            borderRadius={20}
+            checkedIcon = {<SwitchIconOff />}
+            uncheckedIcon = {<SwitchIconOn/>}
+            className="mr-5"
+            onColor="#119fff"
+            offColor="#114fff"
           />
         </div>
         {type === "text" ? (
