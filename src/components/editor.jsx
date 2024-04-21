@@ -24,8 +24,9 @@ export default function Editor() {
     try {
       const selectedPath = await open();
       const contents = await readTextFile(selectedPath);
+      store.dispatch({ type: "ADD_TAB", payload: selectedPath });
       setValue(contents);
-      console.log(selectedPath);
+      // console.log(selectedPath);
     } catch (e) {
       console.log(e);
     }
