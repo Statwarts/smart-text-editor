@@ -8,7 +8,7 @@ const types = {
   css: "code",
   py: "code",
   txt: "text",
-  md: "text",
+  md: "code",
   json: "code",
   xml: "code",
   yml: "code",
@@ -39,11 +39,15 @@ const keyReducer = (state = initialState, action) => {
   return produce(state, (draft) => {
     switch (action.type) {
       case "ADD_TAB":
-        // console.log(action.payload);
         fileType = action.payload.split(".").pop();
+        draft.type = types[fileType];
+        if (draft.openTabs.includes(action.payload)) {
+          draft.selectedTab = action.payload;
+          break;
+        }
+        // console.log(action.payload);
         draft.openTabs.push(action.payload);
         draft.selectedTab = action.payload;
-        draft.type = types[fileType];
         break;
       case "SET_EDITOR_VALUE":
         draft.editorValue = action.payload;
