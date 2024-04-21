@@ -9,7 +9,8 @@ import { save } from "@tauri-apps/api/dialog";
 import { invoke } from "@tauri-apps/api";
 import { Editor as EditorComponent } from "primereact/editor";
 import Switch from "react-switch";
-import {SwitchIconOn, SwitchIconOff } from "./switchIcon";
+import { SwitchIconOn, SwitchIconOff } from "./switchIcon";
+
 
 
 export default function Editor() {
@@ -26,7 +27,6 @@ export default function Editor() {
       const contents = await readTextFile(selectedPath);
       store.dispatch({ type: "ADD_TAB", payload: selectedPath });
       setValue(contents);
-      // console.log(selectedPath);
     } catch (e) {
       console.log(e);
     }
@@ -53,7 +53,7 @@ export default function Editor() {
   return (
     <>
       <div>
-        <h1>Editor</h1>
+        <br></br>
         <div className="w-screen justify-between flex mb-2">
           <div className="flex gap-2">
             <button
@@ -86,8 +86,8 @@ export default function Editor() {
             width={90}
             handleDiameter={50}
             borderRadius={20}
-            checkedIcon = {<SwitchIconOff />}
-            uncheckedIcon = {<SwitchIconOn/>}
+            checkedIcon={<SwitchIconOff />}
+            uncheckedIcon={<SwitchIconOn />}
             className="mr-5"
             onColor="#119fff"
             offColor="#114fff"

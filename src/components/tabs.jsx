@@ -2,9 +2,9 @@ import store from "../store";
 import React, { useState, useEffect } from "react";
 import { readTextFile } from "@tauri-apps/api/fs";
 const shorten = (str) => {
-    console.log("the input:",str);
+    // console.log("the input:",str);
     const fileName = str.split("\\").pop();
-    console.log(fileName);
+    // console.log(fileName);
     return fileName;
 };
 
