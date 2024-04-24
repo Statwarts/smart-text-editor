@@ -40,7 +40,7 @@ export default function Tabs() {
                 {openTabs.map((tab, index) => (
                     <div
                         key={index}
-                        className={`p-2 rounded-md cursor-pointer hover:bg-gray-600 hover:text-black ${
+                        className={`flex p-2 gap-2 rounded-md cursor-pointer ${
                             tab === selectedTab ? "text-white bg-gray-600" : "text-gray-400"
                         }`}
                         onClick={() => {
@@ -50,6 +50,11 @@ export default function Tabs() {
                         {/* <span className={`${tab === selectedTab ? "border-b-2 border-white" : ""}`}> */}
                             {shorten(tab)}
                         {/* </span> */}
+                        <div
+                        className="text-red-300 hover:text-red-500"
+                         onClick={()=>{
+                            store.dispatch({ type: "CLOSE_TAB", payload: tab});
+                        }}>x</div>
                     </div>
                 ))}
             </div>

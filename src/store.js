@@ -38,6 +38,12 @@ let fileType;
 const keyReducer = (state = initialState, action) => {
   return produce(state, (draft) => {
     switch (action.type) {
+      case "CLOSE_TAB":
+        draft.openTabs = draft.openTabs.filter((tab) => tab !== action.payload);
+        if (draft.selectedTab === action.payload) {
+          draft.selectedTab = draft.openTabs[0];
+        }
+        break;
       case "ADD_TAB":
         fileType = action.payload.split(".").pop();
         draft.type = types[fileType];
