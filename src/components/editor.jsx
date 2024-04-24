@@ -11,12 +11,10 @@ import { Editor as EditorComponent } from "primereact/editor";
 import Switch from "react-switch";
 import { SwitchIconOn, SwitchIconOff } from "./switchIcon";
 
-
-
 export default function Editor() {
   const [value, setValue] = useState(store.getState().editorValue);
   const [type, setType] = useState(store.getState().type);
-  const [file, setFile] = useState(""); // Add a new state variable to store the path of the file to be opened
+
   const onChange = useCallback((val, viewUpdate) => {
     setValue(val);
   }, []);
@@ -31,6 +29,7 @@ export default function Editor() {
       console.log(e);
     }
   };
+
   const saveFile = async () => {
     try {
       const selectedPath = await save();
@@ -50,69 +49,61 @@ export default function Editor() {
     setValue(store.getState().editorValue);
     setType(store.getState().type);
   });
+
   return (
-    <>
-      <div>
-        <br></br>
-        <div className="w-screen justify-between flex mb-2">
-          <div className="flex gap-2">
-            <button
-              onClick={() => {
-                openFile();
-              }}
-              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-4 rounded-full"
-            >
-              Open
-            </button>
-            <button
-              onClick={() => {
-                saveFile();
-              }}
-              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-4 rounded-full"
-            >
-              Save
-            </button>
-          </div>
+    <div className="container mx-auto mt-5">
+      <div className="flex justify-between mb-4">
+        <div className="flex gap-4">
+          <button
+            onClick={openFile}
+            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full"
+          >
+            Open
+          </button>
+          <button
+            onClick={saveFile}
+            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full"
+          >
+            Save
+          </button>
+        </div>
+        <div className="flex items-center">
+          {/* <span className="text-gray-500">Text</span> */}
           <Switch
             checked={type === "code"}
-            onChange={(e) => {
-              console.log(e);
+            onChange={(checked) => {
               store.dispatch({
                 type: "SET_TYPE",
-                payload: e ? "code" : "text",
+                payload: checked ? "code" : "text",
               });
             }}
-            height={40}
-            width={90}
-            handleDiameter={50}
-            borderRadius={20}
+            height={24}
+            width={48}
+            handleDiameter={24}
+            borderRadius={12}
             checkedIcon={<SwitchIconOff />}
             uncheckedIcon={<SwitchIconOn />}
-            className="mr-5"
             onColor="#119fff"
             offColor="#114fff"
           />
+          {/* <span className="text-gray-500">Code</span> */}
         </div>
-        {type === "text" ? (
-          <EditorComponent
-            value={value}
-            onTextChange={(e) => setValue(e.htmlValue)}
-            style={{
-              height: "49vh",
-              backgroundColor: "#262626",
-              color: "#ffffff",
-            }}
-          />
-        ) : (
-          <CodeMirror
-            value={value}
-            height="54vh"
-            theme={vscodeDark}
-            extensions={[javascript({ jsx: true })]}
-            onChange={onChange}
-          />
-        )}
       </div>
-    </>
+      {type === "text" ? (
+        <EditorComponent
+          value={value}
+          onTextChange={(e) => setValue(e.htmlValue)}
+          style={{ height: "50vh", backgroundColor: "#262626", color: "#ffffff" }}
+        />
+      ) : (
+        <CodeMirror
+          value={value}
+          height="50vh"
+          theme={vscodeDark}
+          extensions={[javascript({ jsx: true })]}
+          onChange={onChange}
+        />
+      )}
+    </div>
   );
 }

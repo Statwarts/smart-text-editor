@@ -1,49 +1,58 @@
 import store from "../store";
 import React, { useState, useEffect } from "react";
 import { readTextFile } from "@tauri-apps/api/fs";
+
 const shorten = (str) => {
-    // console.log("the input:",str);
     const fileName = str.split("\\").pop();
-    // console.log(fileName);
     return fileName;
 };
 
 export default function Tabs() {
-  const [openTabs, setOpenTabs] = useState(store.getState().openTabs);
-  const [selectedTab, setSelectedTab] = useState(store.getState().selectedTab);
-  useEffect(() => {
-    const unsubscribe = store.subscribe(() => {
-      setOpenTabs(store.getState().openTabs);
-      setSelectedTab(store.getState().selectedTab);
-    });
-    return () => {
-      unsubscribe();
-    };
-  }, []);
+    const [openTabs, setOpenTabs] = useState(store.getState().openTabs);
+    const [selectedTab, setSelectedTab] = useState(store.getState().selectedTab);
 
-  useEffect(() => {
-    // console.log("at tabs",selectedTab);
-    const fetchContents = async () => {
-      const contents = await readTextFile(selectedTab);
-        store.dispatch({ type: "SET_EDITOR_VALUE", payload: contents });
-    }
-    if (selectedTab) {
-        fetchContents();
-    }
-  }, [selectedTab]);
-  return (
-    <div className="flex gap-2">
-      {openTabs.map((tab, index) => (
-        <div
-          className="border-[1px] p-1 rounded-md"
-          key={index}
-          onClick={() => {
-            store.dispatch({ type: "SET_SELECTED_TAB", payload: tab });
-          }}
-        >
-          {shorten(tab)}
+    useEffect(() => {
+        const unsubscribe = store.subscribe(() => {
+            setOpenTabs(store.getState().openTabs);
+            setSelectedTab(store.getState().selectedTab);
+        });
+        return () => {
+            unsubscribe();
+        };
+    }, []);
+
+    useEffect(() => {
+        const fetchContents = async () => {
+            const contents = await readTextFile(selectedTab);
+            store.dispatch({ type: "SET_EDITOR_VALUE", payload: contents });
+        }
+        if (selectedTab) {
+            fetchContents();
+        }
+    }, [selectedTab]);
+
+    return (
+        <div className="flex flex-col gap-2">
+            <div className="flex items-center justify-between">
+                <h1 className="text-lg font-semibold">Files</h1>
+            </div>
+            <div className="flex items-center gap-1">
+                {openTabs.map((tab, index) => (
+                    <div
+                        key={index}
+                        className={`p-2 rounded-md cursor-pointer hover:bg-gray-600 hover:text-black ${
+                            tab === selectedTab ? "text-white bg-gray-600" : "text-gray-400"
+                        }`}
+                        onClick={() => {
+                            store.dispatch({ type: "SET_SELECTED_TAB", payload: tab });
+                        }}
+                    >
+                        {/* <span className={`${tab === selectedTab ? "border-b-2 border-white" : ""}`}> */}
+                            {shorten(tab)}
+                        {/* </span> */}
+                    </div>
+                ))}
+            </div>
         </div>
-      ))}
-    </div>
-  );
+    );
 }

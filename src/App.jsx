@@ -7,8 +7,8 @@ export default function App() {
   return (
     <div className="text-white bg-black">
       <Tabs/>
-      <TerminalComponent />
       <Editor />
+      <TerminalComponent />
     </div>
   );
 }
